@@ -14,5 +14,5 @@ public interface AdRepository extends JpaRepository<AdEntity, Long> {
     @Query(value = "SELECT * FROM ads WHERE title LIKE '%title%'", nativeQuery = true)
     List<AdEntity> findByTitleLikeIgnoreCase(@Param("title") String title);
 
-    Collection<AdEntity> findAllAdsByAuthorId(long userId);
+    Collection<AdEntity> findAllAdsByAuthorId(Integer userId);
 }

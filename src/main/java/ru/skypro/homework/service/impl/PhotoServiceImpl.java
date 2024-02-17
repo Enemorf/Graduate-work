@@ -2,6 +2,7 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.PhotoEntity;
@@ -15,6 +16,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class PhotoServiceImpl implements PhotoService {
+
+    @Value("${path.to.avatars.folder}")
+    private String imagesDir;
+
     private final PhotoRepository repository;
 
     @Override

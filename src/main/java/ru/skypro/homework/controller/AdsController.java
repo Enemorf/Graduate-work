@@ -6,40 +6,56 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.AdsDto;
-import ru.skypro.homework.dto.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.AdService;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/ads")
 public class AdsController {
+
+    private final AdService adService;
+
+    public AdsController(AdService adService)
+    {
+        this.adService = adService;
+    }
 
     @GetMapping
     public ResponseEntity<AdsDto> getAllAds()
     {
         log.info("Get getAllAds");
-        return ResponseEntity.ok().build();
+        AdsDto adsDto = adService.getAllAds();
+        return ResponseEntity.ok().body(adsDto);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdDto> addAd(@RequestPart("properties") AdDto adDto,
+    public ResponseEntity<AdDto> addAd(@RequestPart("properties") ExtendedAdDtoLite extendedAdDtoLite,
                                        @RequestPart("image") MultipartFile image,
                                        Principal principal)
     {
         log.info("Post addAd");
-        return ResponseEntity.ok().build();
+        try
+        {
+            AdDto adDto = adService.addAd(extendedAdDtoLite,image,principal);
+            return ResponseEntity.ok(adDto);
+        }
+        catch (IOException e)
+        {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdDto> getAd(@PathVariable Integer id)
+    public ResponseEntity<ExtendedAdDto> getAd(@PathVariable Integer id)
     {
         log.info("Get getAd");
-        return ResponseEntity.ok().build();
+        ExtendedAdDto extendedAdDto = adService.getAd(id);
+        return ResponseEntity.ok().body(extendedAdDto);
     }
 
     @DeleteMapping("/{id}")

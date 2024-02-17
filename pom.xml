@@ -20,6 +20,7 @@
 
   <properties>
     <java.version>11</java.version>
+    <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
   </properties>
 
   <dependencies>
@@ -66,6 +67,20 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
+    </dependency>
+      <dependency>
+          <groupId>org.xmlunit</groupId>
+          <artifactId>xmlunit-core</artifactId>
+      </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.3.1.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>${org.mapstruct.version}</version>
     </dependency>
   </dependencies>
 

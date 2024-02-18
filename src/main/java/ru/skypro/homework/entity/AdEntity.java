@@ -21,6 +21,7 @@ public class AdEntity {
     @JoinColumn(name = "photo_id")
     private PhotoEntity photo;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private UserEntity author;

@@ -14,6 +14,6 @@ public interface UserService {
     UserEntity getAuthorizedUser(Authentication authentication);
     void changePassword(NewPasswordDTO newPasswordDTO, Authentication authentication);
     void updateAvatar(MultipartFile image, Authentication authentication) throws IOException;
-    byte[] getUserImage(Long userId) throws IOException;
+    byte[] getUserImage(Integer userId) throws IOException;
 
 }

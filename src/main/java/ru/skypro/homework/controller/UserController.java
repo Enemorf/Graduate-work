@@ -156,8 +156,8 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getImage(@PathVariable long id) throws IOException {
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id) throws IOException {
         log.info("Get user image with id" + id);
         return ResponseEntity.ok(userService.getUserImage(id));
     }

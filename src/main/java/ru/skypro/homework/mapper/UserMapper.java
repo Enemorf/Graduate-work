@@ -13,14 +13,15 @@ import ru.skypro.homework.entity.UserEntity;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", defaultValue = "USER")
-    @Mapping(target = "photo", source = "photo")
+    @Mapping(target = "avatarPath", source = "image")
     UserEntity toEntity(UserDTO dto);
 
-    @Mapping(target = "photo", expression = "java(photoMapper(user))")
-
+    @Mapping(target = "image", expression = "java(photoMapper(user))")
     UserDTO toUserDto(UserEntity user);
+
+
     default String photoMapper(UserEntity userEntity){
-        return "/users/"+ userEntity.getId() + "/photo";
+        return "C:/Users/Aleksandr/IdeaProjects/sky-pro/Graduate-work/images" + userEntity.getId();
     }
     PhotoEntity map(String value);
 

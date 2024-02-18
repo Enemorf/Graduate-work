@@ -39,3 +39,7 @@ CREATE TABLE comments
     ad_id     INTEGER REFERENCES ads (id)
 
 );
+
+-- changeset katyushnyj:1
+ALTER TABLE users DROP COLUMN photo_id;
+ALTER TABLE users ADD COLUMN avatar_path VARCHAR(255);

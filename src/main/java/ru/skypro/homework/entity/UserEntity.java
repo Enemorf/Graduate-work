@@ -23,9 +23,12 @@ public class UserEntity {
     private String lastName;
     private String phone;
 
-    @OneToOne
-    @JoinColumn(name = "photo_id")
-    private PhotoEntity photo;
+//    @OneToOne
+//    @JoinColumn(name = "photo_id")
+//    private PhotoEntity photo;
+
+    @Column(name = "avatar_path")
+    private String avatarPath;
 
     @OneToMany(mappedBy = "author")
     private Collection<AdEntity> ads;

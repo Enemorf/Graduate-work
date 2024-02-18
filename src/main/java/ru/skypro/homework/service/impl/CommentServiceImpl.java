@@ -1,11 +1,15 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.AdEntity;
+import ru.skypro.homework.mapper.AdMapper;
+import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
@@ -14,16 +18,12 @@ import java.security.Principal;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
+    CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-
-    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository)
-    {
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public CommentsDto getAdComments(Integer id) {

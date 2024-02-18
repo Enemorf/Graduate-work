@@ -1,14 +1,14 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
+import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
-import ru.skypro.homework.dto.ExtendedAdDtoLite;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
@@ -25,19 +25,13 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AdServiceImpl implements AdService {
 
     AdMapper adMapper = Mappers.getMapper(AdMapper.class);
     private final UserRepository userRepository;
     private final AdRepository adRepository;
     private final ImageService imageService;
-
-    public AdServiceImpl(UserRepository userRepository, AdRepository adRepository, ImageService imageService)
-    {
-        this.userRepository = userRepository;
-        this.adRepository = adRepository;
-        this.imageService = imageService;
-    }
 
     @Override
     public AdsDto getAllAds() {
@@ -56,10 +50,10 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto addAd(ExtendedAdDtoLite extendedAdDtoLite, MultipartFile image, Principal principal ) {
+    public AdDto addAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile image, Principal principal ) {
         UserEntity userEntity = getPrincipalUser(principal);
         ImageEntity imageEntity = imageService.saveImg(image);
-        AdEntity adEntity = adMapper.extendedAdDtoLiteUserEntityImageEntityToAdEntity(extendedAdDtoLite,userEntity,imageEntity);
+        AdEntity adEntity = adMapper.extendedAdDtoLiteUserEntityImageEntityToAdEntity(createOrUpdateAdDto,userEntity,imageEntity);
         adRepository.save(adEntity);
         return adMapper.adEntityToAdDto(adEntity);
     }

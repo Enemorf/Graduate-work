@@ -16,14 +16,10 @@ import java.security.Principal;
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/ads")
+@RequiredArgsConstructor
 public class AdsController {
 
     private final AdService adService;
-
-    public AdsController(AdService adService)
-    {
-        this.adService = adService;
-    }
 
     @GetMapping
     public ResponseEntity<AdsDto> getAllAds()
@@ -34,14 +30,14 @@ public class AdsController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdDto> addAd(@RequestPart("properties") ExtendedAdDtoLite extendedAdDtoLite,
+    public ResponseEntity<AdDto> addAd(@RequestPart("properties") CreateOrUpdateAdDto createOrUpdateAdDto,
                                        @RequestPart("image") MultipartFile image,
                                        Principal principal)
     {
         log.info("Post addAd");
         try
         {
-            AdDto adDto = adService.addAd(extendedAdDtoLite,image,principal);
+            AdDto adDto = adService.addAd(createOrUpdateAdDto,image,principal);
             return ResponseEntity.ok(adDto);
         }
         catch (IOException e)

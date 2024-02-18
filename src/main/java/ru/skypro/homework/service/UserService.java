@@ -13,4 +13,6 @@ public interface UserService {
     UserDto getUser(Principal principal);
     UpdateUserDto updateUser(UpdateUserDto updateUserDto, Principal principal);
     String updateImage(MultipartFile image, Principal principal) throws IOException;
+
+    byte[] getUserImage(Integer id) throws IOException;
 }

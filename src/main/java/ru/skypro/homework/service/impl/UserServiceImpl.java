@@ -6,6 +6,7 @@ import org.apache.catalina.User;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.ImageService;
@@ -52,15 +54,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Principal principal) {
-        UserEntity user = findUser(principal.getName());
-        UserDto userDto = userMapper.userEntityToUserDto(user);
-        ImageEntity imageEntity = user.getImageEntity();
-        if(imageEntity != null)
-        {
-            String newPath = "/"+imageEntity.getPath().replace("\\","/");
-            userDto.setImage(newPath);
-        }
-        return userDto;
+        var result = userMapper.userEntityToUserDto(userRepository.findByUsername(principal.getName()));
+        return result;
     }
 
     @Override
@@ -88,6 +83,12 @@ public class UserServiceImpl implements UserService {
         user.setImageEntity(imageEntity);
         userRepository.save(user);
         return imageEntity.getPath();
+    }
+
+    @Override
+    public byte[] getUserImage(Integer id) throws IOException {
+        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return imageService.getByteFromFile(user.getImageEntity().getPath());
     }
 
     private void changePassword(String oldPass, String newPass)

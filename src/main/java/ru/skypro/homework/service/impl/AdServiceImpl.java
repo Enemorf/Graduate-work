@@ -18,6 +18,7 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.ImageService;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto addAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile image, Principal principal ) {
+    public AdDto addAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile image, Principal principal ) throws IOException {
         UserEntity userEntity = getPrincipalUser(principal);
         ImageEntity imageEntity = imageService.saveImg(image);
         AdEntity adEntity = adMapper.extendedAdDtoLiteUserEntityImageEntityToAdEntity(createOrUpdateAdDto,userEntity,imageEntity);

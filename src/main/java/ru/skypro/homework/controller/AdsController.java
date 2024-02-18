@@ -2,6 +2,7 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -58,22 +60,32 @@ public class AdsController {
     public ResponseEntity<AdDto> removeAd(@PathVariable Integer id)
     {
         log.info("Delete removeAd");
-        return ResponseEntity.ok().build();
+        try
+        {
+            adService.removeAd(id);
+            return ResponseEntity.ok().build();
+        }
+        catch (NoSuchElementException e)
+        {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<AdDto> updateAd(@PathVariable Integer id,
-                                          @RequestBody AdDto adDto)
+                                          @RequestBody CreateOrUpdateAdDto createOrUpdateAdDto)
     {
         log.info("Delete removeAd");
-        return ResponseEntity.ok().build();
+        AdDto adDto = adService.updateAd(id, createOrUpdateAdDto);
+        return ResponseEntity.ok().body(adDto);
     }
 
     @GetMapping("/me")
     public ResponseEntity<AdsDto> getUserAd(Principal principal)
     {
         log.info("Get getUserAd");
-        return ResponseEntity.ok().build();
+        AdsDto allAds = adService.getUserAd(principal);
+        return ResponseEntity.ok(allAds);
     }
 
     @PatchMapping(value = "/{id}/image", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -81,7 +93,12 @@ public class AdsController {
                                                 @RequestParam MultipartFile image)
     {
         log.info("Patch updateAdImage");
-        return ResponseEntity.ok().build();
+        try {
+            byte[] bytes = adService.updateAdImage(id, image);
+            return ResponseEntity.ok(bytes);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 

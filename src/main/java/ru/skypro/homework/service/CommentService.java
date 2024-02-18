@@ -9,6 +9,6 @@ import java.security.Principal;
 public interface CommentService {
     CommentsDto getAdComments(Integer id);
     CommentDto addComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto, Principal principal);
-    boolean removeComment(Integer id, Integer commentId);
+    boolean removeComment(Integer id);
     CommentDto updateComment(Integer id, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
 }

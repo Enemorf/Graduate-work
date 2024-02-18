@@ -10,7 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.service.UserService;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @Slf4j
@@ -19,11 +21,13 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+    private final UserService userService;
 
     @PostMapping("/set_password")
     public ResponseEntity<Void> setPassword(@RequestBody NewPasswordDto newPasswordDto)
     {
         log.info("Post setPassword");
+        userService.setPassword(newPasswordDto);
         return ResponseEntity.ok().build();
     }
 
@@ -31,7 +35,8 @@ public class UserController {
     public ResponseEntity<UserDto> getUser(Principal principal)
     {
         log.info("Get getUser");
-        return ResponseEntity.ok().build();
+        UserDto userDto = userService.getUser(principal);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @PatchMapping("/me")
@@ -39,7 +44,8 @@ public class UserController {
                                                     Principal principal)
     {
         log.info("Patch updateUser");
-        return ResponseEntity.ok().build();
+        UpdateUserDto userDto = userService.updateUser(updateUserDto,principal);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @PatchMapping(value ="/me/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -47,7 +53,12 @@ public class UserController {
                                             Principal principal)
     {
         log.info("Patch updateImage");
-        return ResponseEntity.ok().build();
+        try {
+            userService.updateImage(image, principal);
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

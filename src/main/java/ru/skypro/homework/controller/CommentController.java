@@ -2,13 +2,16 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
+import ru.skypro.homework.service.CommentService;
 
 import java.security.Principal;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -17,11 +20,13 @@ import java.security.Principal;
 @RequestMapping("/ads")
 public class CommentController {
 
+    private final CommentService commentService;
     @GetMapping("/{id}/comments")
     public ResponseEntity<CommentsDto> getAdComments(@PathVariable Integer id)
     {
         log.info("Get getAdComments");
-        return ResponseEntity.ok().build();
+        CommentsDto commentsDto = commentService.getAdComments(id);
+        return ResponseEntity.ok().body(commentsDto);
     }
 
     @PostMapping("/{id}/comments")
@@ -30,23 +35,33 @@ public class CommentController {
                                                  Principal principal)
     {
         log.info("Post addComment");
-        return ResponseEntity.ok().build();
+        CommentDto commentDto = commentService.addComment(id,createOrUpdateCommentDto,principal);
+        return ResponseEntity.ok().body(commentDto);
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> removeComment(@PathVariable Integer id,
+    public ResponseEntity<CommentDto> removeComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId)
     {
         log.info("Delete removeComment");
-        return ResponseEntity.ok().build();
+        try
+        {
+            commentService.removeComment(commentId);
+            return ResponseEntity.ok().build();
+        }
+        catch (NoSuchElementException e)
+        {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
     }
 
     @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateComment(@PathVariable Integer id,
+    public ResponseEntity<CommentDto> updateComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId,
                                                     @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto)
     {
         log.info("Patch updateComment");
-        return ResponseEntity.ok().build();
+        CommentDto commentDto = commentService.updateComment(adId,commentId,createOrUpdateCommentDto);
+        return ResponseEntity.ok().body(commentDto);
     }
 }

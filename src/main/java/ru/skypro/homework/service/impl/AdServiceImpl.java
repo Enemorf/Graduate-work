@@ -39,15 +39,7 @@ public class AdServiceImpl implements AdService {
         List<AdEntity> ads = adRepository.findAll();
         AdsDto adsDto = new AdsDto();
         List<AdDto> adList = new ArrayList<>();
-        for(AdEntity adEntity : ads)
-        {
-            AdDto adDto = adMapper.adEntityToAdDto(adEntity);
-            adDto.setImage("/"+adEntity.getImageEntity().getPath());
-            adList.add(adDto);
-        }
-        adsDto.setResults(adList);
-        adsDto.setCount(adList.size());
-        return adsDto;
+        return getAdsDto(ads, adList, adsDto);
     }
 
     @Override
@@ -70,22 +62,51 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public boolean removeAd(Integer id) {
-        return false;
+        AdEntity adEntity = adRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException());
+        adRepository.delete(adEntity);
+        return true;
     }
 
     @Override
-    public AdDto updateAd(Integer id, AdDto adDto) {
-        return null;
+    public AdDto updateAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
+        AdEntity adEntity = findById(id);
+        adEntity.setTitle(createOrUpdateAdDto.getTitle());
+        adEntity.setPrice(createOrUpdateAdDto.getPrice());
+        adEntity.setDescription(createOrUpdateAdDto.getDescription());
+        adRepository.save(adEntity);
+
+        AdDto adDto = adMapper.adEntityToAdDto(adEntity);
+        adDto.setImage("/"+ adEntity.getImageEntity().getPath());
+        return adDto;
     }
 
     @Override
     public AdsDto getUserAd(Principal principal) {
-        return null;
+        UserEntity user = getPrincipalUser(principal);
+        List<AdEntity> result = adRepository.findByUsersId(user);
+        List<AdDto> adDtoList = new ArrayList<>();
+        AdsDto adsDto = new AdsDto();
+        return getAdsDto(result, adDtoList, adsDto);
+    }
+
+    private AdsDto getAdsDto(List<AdEntity> result, List<AdDto> adDtoList, AdsDto adsDto) {
+        for (AdEntity adEntity : result) {
+            AdDto adDto = adMapper.adEntityToAdDto(adEntity);
+            adDto.setImage("/" + adEntity.getImageEntity().getPath());
+            adDtoList.add(adDto);
+        }
+        adsDto.setResults(adDtoList);
+        adsDto.setCount(adDtoList.size());
+        return adsDto;
     }
 
     @Override
-    public byte[] updateAdImage(Integer id, MultipartFile image) {
-        return new byte[0];
+    public byte[] updateAdImage(Integer id, MultipartFile image) throws IOException {
+        AdEntity adEntity = adRepository.findById(id).get();
+        ImageEntity imageEntity = adEntity.getImageEntity();
+        imageService.updateImg(imageEntity.getId(), image);
+        return image.getBytes();
     }
 
     private UserEntity getPrincipalUser(Principal principal)
@@ -93,7 +114,8 @@ public class AdServiceImpl implements AdService {
         return userRepository.findByUsername(principal.getName());
     }
 
-    private AdEntity findById(Integer id)
+    @Override
+    public AdEntity findById(Integer id)
     {
         return adRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }

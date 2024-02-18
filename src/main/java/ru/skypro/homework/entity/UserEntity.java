@@ -23,14 +23,17 @@ public class UserEntity {
     private String lastName;
     private String phone;
 
-    @OneToOne
-    @JoinColumn(name = "photo_id")
-    private PhotoEntity photo;
+//    @OneToOne
+//    @JoinColumn(name = "photo_id")
+//    private PhotoEntity photo;
 
-    @OneToMany(mappedBy = "author")
+    @Column(name = "avatar_path")
+    private String image;
+
+    @OneToMany(mappedBy = "author", fetch=FetchType.LAZY)
     private Collection<AdEntity> ads;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch=FetchType.LAZY)
     private Collection<CommentEntity> comments;
     private String email;
     @Enumerated(EnumType.STRING)

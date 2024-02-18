@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setPhone(userDTO.getPhone());
+        user.setImage(userDTO.getImage());
         userRepository.save(user);
         return userMapper.toUserDto(user);
     }
@@ -61,23 +62,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateAvatar(MultipartFile image, Authentication authentication) throws IOException {
+    public void updateUserImage(MultipartFile image, Authentication authentication) throws IOException {
         log.info("Request to update avatar of user");
         UserEntity user = userRepository.findByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
-        user.setPhoto(photoService.downloadPhoto(image));
+        user.setImage(photoService.downloadPhoto(image).getFilePath());
         userRepository.save(user);
         userMapper.toUserDto(user);
     }
 
     @Override
-    public byte[] getUserImage(Long userId) throws IOException {
+    public byte[] getUserPhoto(Integer userId) throws IOException {
         log.info("Request to getting image");
         UserEntity user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        if (user.getPhoto() != null) {
-            return user.getPhoto().getData();
-        } else {
-            File emptyAvatar = new File("src/main/resources/static/emptyAvatar.png");
-            return Files.readAllBytes(emptyAvatar.toPath());
-        }
+//        System.out.println(user);
+//        File emptyAvatar = new File("src/main/resources/static/emptyAvatar.png");
+        return photoService.getPhoto(user.getImage());
     }
 }

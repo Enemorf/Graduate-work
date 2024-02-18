@@ -78,10 +78,10 @@ public class AdsController {
                     )
             }
     )
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdDTO> addAd(@RequestParam("image")@NonNull CreateOrUpdateAdDTO ad,
-                                       @RequestPart MultipartFile image,
-                                       @RequestParam Authentication authentication) {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<AdDTO> createAdd(@RequestPart(value = "properties") CreateOrUpdateAdDTO ad,
+                                       @RequestPart("image") MultipartFile image,
+                                        Authentication authentication) {
         return ResponseEntity.ok(adService.createAd(ad, image, authentication));
     }
 
@@ -107,8 +107,8 @@ public class AdsController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<ExtendedAdDTO> getAdById(@PathVariable("id") int id) {
-        ExtendedAdDTO extendedAdDTO = adService.getFullAd((long) id);
+    public ResponseEntity<ExtendedAdDTO> getAdById(@PathVariable("id") Long id) {
+        ExtendedAdDTO extendedAdDTO = adService.getFullAd(id);
         return ResponseEntity.ok(extendedAdDTO);
     }
 
@@ -163,9 +163,9 @@ public class AdsController {
     )
     @PreAuthorize("@adServiceImpl.getFullAd(#id).email == authentication.name or hasRole('ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<AdDTO> updateAd(@PathVariable int id,
+    public ResponseEntity<AdDTO> updateAd(@PathVariable Long id,
                                            @RequestBody CreateOrUpdateAdDTO createAdsDTO){
-        return ResponseEntity.ok(adService.updateAd(createAdsDTO,(long)id));
+        return ResponseEntity.ok(adService.updateAd(createAdsDTO,id));
     }
     @Operation(
             summary = "Get my ads",
@@ -217,7 +217,7 @@ public class AdsController {
             }
     )
     @PreAuthorize("@adServiceImpl.getFullAd(#id).email == authentication.name or hasRole('ADMIN')")
-    @PatchMapping(value = "/{id}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/image/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateImageAd(@PathVariable int id, @RequestPart MultipartFile image) throws IOException {
         return ResponseEntity.ok(adService.updatePhoto((long) id,image));
     }
@@ -242,8 +242,8 @@ public class AdsController {
                     )
             }
     )
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getImage(@PathVariable long id){
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> get(@PathVariable Long id){
         return ResponseEntity.ok(adService.getAdImage(id));
     }
 

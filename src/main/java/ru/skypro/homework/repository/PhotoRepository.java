@@ -6,4 +6,5 @@ import ru.skypro.homework.entity.PhotoEntity;
 
 @Repository
 public interface PhotoRepository extends JpaRepository<PhotoEntity, Long> {
+
 }

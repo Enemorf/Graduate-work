@@ -12,16 +12,19 @@ import java.util.Collection;
 public class AdEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private Integer price;
     private String title;
     private String description;
 
-    @OneToOne
-    @JoinColumn(name = "photo_id")
-    private PhotoEntity photo;
+//    @OneToOne
+//    @JoinColumn(name = "image_id")
+//    private PhotoEntity imageId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "image")
+    private String image;
+
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private UserEntity author;
 

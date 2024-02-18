@@ -23,8 +23,8 @@ public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/ads",
-            "/ads/*image",
-            "/users/*/image",
+            "/ads/image/*",
+            "/users/image/*",
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v3/api-docs",

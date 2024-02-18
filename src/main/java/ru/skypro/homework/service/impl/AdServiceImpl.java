@@ -59,7 +59,7 @@ public class AdServiceImpl implements AdService {
         }
 //        AdEntity ad = adMapper.adEntityToAddDTO(createAdDTO);
         UserEntity userEntity = userService.getAuthorizedUser(authentication);
-//        log.info("Request to create new ad");
+        log.info("Request to create new ad");
         PhotoEntity adImage;
         try {
             adImage = photoService.downloadPhoto(image);
@@ -70,7 +70,6 @@ public class AdServiceImpl implements AdService {
 //        ad.setPhoto(adImage);
         adRepository.save(ad);
         log.info("Save new ad ID:" + ad.getId());
-
         return adMapper.adEntityToAddDTO(ad);
     }
 
@@ -79,6 +78,8 @@ public class AdServiceImpl implements AdService {
         log.info("Request to get full info about ad");
         AdEntity ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         return adMapper.adEntityAndUserEntityToExtendedAdDTO(ad);
+//        ExtendedAdDTO extendedAdDTO = adRepository.findById(adId).map(AdMapper::adEntityAndUserEntityToExtendedAdDTO).orElseThrow(AdNotFoundException::new);
+//        return extendedAdDTO;
     }
     @Transactional
     @Override
@@ -86,7 +87,7 @@ public class AdServiceImpl implements AdService {
         log.info("Request to delete ad by id");
         AdEntity ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         commentService.deleteAllByAdId(adId);
-        photoService.deletePhoto(ad.getPhoto().getId());
+        photoService.deletePhoto(adId);
         adRepository.deleteById(adId);
     }
 
@@ -117,9 +118,11 @@ public class AdServiceImpl implements AdService {
     public String updatePhoto(Long adId, MultipartFile image) throws IOException {
         log.info("Request to update image");
         AdEntity updateAd = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
-        long idImage = updateAd.getPhoto().getId();
-        updateAd.setPhoto(photoService.downloadPhoto(image));
-        photoService.deletePhoto(idImage);
+        String pathImage = updateAd.getImage();
+        String path = photoService.downloadPhoto(image).getFilePath();
+        System.out.println(path);
+        updateAd.setImage(path);
+        photoService.deletePhoto(adId);
         adRepository.save(updateAd);
         return adMapper.adEntityToAddDTO(updateAd).getImage();
     }
@@ -127,6 +130,10 @@ public class AdServiceImpl implements AdService {
     @Override
     public byte[] getAdImage(Long adId) {
         log.info("Get image of an AD with a ID:" + adId);
-        return photoService.getPhoto(adRepository.findById(adId).orElseThrow(AdNotFoundException::new).getPhoto().getId());
+        try {
+            return photoService.getPhoto(adRepository.getReferenceById(adId).getImage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

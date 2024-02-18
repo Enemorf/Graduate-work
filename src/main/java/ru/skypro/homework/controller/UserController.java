@@ -126,8 +126,8 @@ public class UserController {
             }
     )
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image, Authentication authentication) throws IOException {
-        userService.updateAvatar(image, authentication);
+    public ResponseEntity<Void> updateUserImage(@RequestParam MultipartFile image, Authentication authentication) throws IOException {
+        userService.updateUserImage(image, authentication);
         return ResponseEntity.ok().build();
     }
     private boolean isValidPassword(NewPasswordDTO newPasswordDTO) {
@@ -156,9 +156,9 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getImage(@PathVariable long id) throws IOException {
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getPhoto(@PathVariable Integer id) throws IOException {
         log.info("Get user image with id" + id);
-        return ResponseEntity.ok(userService.getUserImage(id));
+        return ResponseEntity.ok(userService.getUserPhoto(id));
     }
 }

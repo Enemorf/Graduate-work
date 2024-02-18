@@ -7,7 +7,7 @@ import ru.skypro.homework.entity.UserEntity;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByEmailIgnoreCase(String email);
     Optional<UserEntity> findByPassword(String password);
     UserEntity getUserByEmail(String email);

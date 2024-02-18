@@ -18,18 +18,18 @@ public interface AdMapper {
 
 
     @Mapping(target = "author", source = "adEntity.author.id")
-    @Mapping(target = "image", source = "adEntity.photo.filePath")
+    @Mapping(target = "image", source = "image")
     AdDTO adEntityToAddDTO (AdEntity adEntity);
 
-
+    @Mapping(target = "pk", source = "id")
     Collection<AdDTO> adToAdListDto(Collection<AdEntity> ads);
 
-    @Mapping(target = "image", source = "adEntity.photo.filePath")
+    @Mapping(target = "image", source = "image")
+    @Mapping(target = "pk", source = "id")
     ExtendedAdDTO adEntityAndUserEntityToExtendedAdDTO(AdEntity adEntity);
 
-
     @Mapping(target = "author.id", source = "userEntity.id")
-    @Mapping(target = "description", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "image", source = "photoEntity.filePath")
     AdEntity adDTOAndUserEntityToAdEntity (UserEntity userEntity, CreateOrUpdateAdDTO createOrUpdateAdDTO, PhotoEntity photoEntity);
 }

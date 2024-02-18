@@ -10,7 +10,7 @@ paths:
       tags:
         - Пользователи
       summary: 'Обновление пароля'
-      operationId: setPassword
+      operationId: changePassword
       requestBody:
         content:
           application/json:
@@ -28,7 +28,7 @@ paths:
       tags:
         - Пользователи
       summary: 'Получение информации об авторизованном пользователе'
-      operationId: getUser
+      operationId: getAuthorizedUser
       responses:
         '200':
           content:
@@ -54,7 +54,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateUser'
+                $ref: '#/components/schemas/SecurityUser'
         '401':
           description: Unauthorized
   /users/me/image:
@@ -124,12 +124,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Ads'
+                $ref: '#/components/schemas/adToAdListDto'
     post:
       tags:
         - Объявления
       summary: 'Добавление объявления'
-      operationId: addAd
+      operationId: createAd
       requestBody:
         content:
           multipart/form-data:
@@ -158,7 +158,7 @@ paths:
       tags:
         - Комментарии
       summary: 'Получение комментариев объявления'
-      operationId: getComments
+      operationId: getAllComments
       parameters:
         - name: id
           in: path
@@ -212,7 +212,7 @@ paths:
       tags:
         - Объявления
       summary: 'Получение информации об объявлении'
-      operationId: getAds
+      operationId: getAdById
       parameters:
         - name: id
           in: path
@@ -235,7 +235,7 @@ paths:
       tags:
         - Объявления
       summary: 'Удаление объявления'
-      operationId: removeAd
+      operationId: deleteAd
       parameters:
         - name: id
           in: path
@@ -256,7 +256,7 @@ paths:
       tags:
         - Объявления
       summary: 'Обновление информации об объявлении'
-      operationId: updateAds
+      operationId: updateAd
       parameters:
         - name: id
           in: path
@@ -352,7 +352,7 @@ paths:
       tags:
         - Объявления
       summary: 'Получение объявлений авторизованного пользователя'
-      operationId: getAdsMe
+      operationId: getUserAllAds
       responses:
         '200':
           content:
@@ -362,12 +362,12 @@ paths:
           description: OK
         '401':
           description: Unauthorized
-  /ads/{id}/image:
+  /ads/image/{id}:
     patch:
       tags:
         - Объявления
       summary: 'Обновление картинки объявления'
-      operationId: updateImage
+      operationId: updatePhoto
       parameters:
         - name: id
           in: path

@@ -37,6 +37,14 @@ public class CommentServiceImpl implements CommentService {
         AdEntity adEntity = adService.findById(id);
         List<CommentEntity> commentEntityList = adEntity.getComments();
         List<CommentDto> commentDtoList = commentMapper.listCommentEntityToListCommentDto(commentEntityList);
+
+        for(int i = 0; i < commentDtoList.size();i++)
+        {
+            if(commentDtoList.get(i).getAuthorImage() == null)
+                continue;
+            commentDtoList.get(i).setAuthorImage("/"+commentDtoList.get(i).getAuthorImage());
+        }
+
         return new CommentsDto(commentDtoList.size(), commentDtoList);
     }
 

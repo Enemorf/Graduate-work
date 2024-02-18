@@ -54,7 +54,7 @@ public class AdsController {
     {
         log.info("Get getAd");
         ExtendedAdDto extendedAdDto = adService.getAd(id);
-        return ResponseEntity.ok().body(extendedAdDto);
+        return ResponseEntity.status(HttpStatus.OK).body(extendedAdDto);
     }
 
     @DeleteMapping("/{id}")
@@ -99,7 +99,7 @@ public class AdsController {
         log.info("Patch updateAdImage");
         try {
             byte[] bytes = adService.updateAdImage(id, image);
-            return ResponseEntity.ok(bytes);
+            return ResponseEntity.ok().body(bytes);
         } catch (IOException e) {
             return ResponseEntity.badRequest().build();
         }

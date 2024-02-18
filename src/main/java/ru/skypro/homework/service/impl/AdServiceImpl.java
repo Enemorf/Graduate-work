@@ -56,7 +56,8 @@ public class AdServiceImpl implements AdService {
         AdEntity adEntity = findById(id);
         UserEntity userEntity = adEntity.getUsersId();
         ExtendedAdDto extendedAdDto = adMapper.adEntityUserEntityToExtendedAdDto(adEntity,userEntity);
-        extendedAdDto.setImage("/"+adEntity.getImageEntity().getPath());
+        String newPath = "/"+adEntity.getImageEntity().getPath().replace("\\","/");
+        extendedAdDto.setImage(newPath);
         return extendedAdDto;
     }
 
@@ -77,7 +78,8 @@ public class AdServiceImpl implements AdService {
         adRepository.save(adEntity);
 
         AdDto adDto = adMapper.adEntityToAdDto(adEntity);
-        adDto.setImage("/"+ adEntity.getImageEntity().getPath());
+        String newPath = "/"+ adEntity.getImageEntity().getPath().replace("\\","/");
+        adDto.setImage(newPath);
         return adDto;
     }
 
@@ -93,7 +95,8 @@ public class AdServiceImpl implements AdService {
     private AdsDto getAdsDto(List<AdEntity> result, List<AdDto> adDtoList, AdsDto adsDto) {
         for (AdEntity adEntity : result) {
             AdDto adDto = adMapper.adEntityToAdDto(adEntity);
-            adDto.setImage("/" + adEntity.getImageEntity().getPath());
+            String newPath = "/" + adEntity.getImageEntity().getPath().replace("\\","/");
+            adDto.setImage(newPath);
             adDtoList.add(adDto);
         }
         adsDto.setResults(adDtoList);

@@ -24,8 +24,8 @@ import java.util.UUID;
 public class ImageServiceImpl implements ImageService {
     private final ImagesRepository imagesRepository;
 
-    @Value("${path.to.avatars.folder}")
-    private String avatarPath;
+    @Value("${path.to.images.folder}")
+    private String imagesPath;
 
     @Override
     public ImageEntity saveImg(MultipartFile image) throws IOException {
@@ -50,13 +50,13 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] getByteFromFile(String path) throws IOException {
-        return Files.readAllBytes(Path.of(avatarPath, path));
+        return Files.readAllBytes(Path.of(imagesPath, path));
     }
 
     private ImageEntity saveImg(ImageEntity image, MultipartFile file) throws IOException {
         String name = file.getOriginalFilename();
         String fileName = UUID.randomUUID()+"."+ getExtension(Objects.requireNonNull(name));
-        Path path = Path.of(avatarPath, fileName);
+        Path path = Path.of(imagesPath, fileName);
         Files.createDirectories(path.getParent());
         streamReadWrite(path,file);
         image.setPath(path.toString());

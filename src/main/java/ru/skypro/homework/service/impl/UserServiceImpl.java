@@ -57,7 +57,8 @@ public class UserServiceImpl implements UserService {
         ImageEntity imageEntity = user.getImageEntity();
         if(imageEntity != null)
         {
-            userDto.setImage("/"+imageEntity.getPath());
+            String newPath = "/"+imageEntity.getPath().replace("\\","/");
+            userDto.setImage(newPath);
         }
         return userDto;
     }

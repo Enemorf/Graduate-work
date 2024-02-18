@@ -21,7 +21,7 @@ public interface UserMapper {
 
 
     default String photoMapper(UserEntity userEntity){
-        return "C:/Users/Aleksandr/IdeaProjects/sky-pro/Graduate-work/images" + userEntity.getId();
+        return "/users/" + userEntity.getId() + "/image";
     }
     PhotoEntity map(String value);
 

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,8 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
 import ru.skypro.homework.entity.PhotoEntity;
+import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.service.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
@@ -156,7 +159,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public ResponseEntity<byte[]> getImage(@PathVariable Integer id) throws IOException {
         log.info("Get user image with id" + id);
         return ResponseEntity.ok(userService.getUserImage(id));

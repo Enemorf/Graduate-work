@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
@@ -40,6 +41,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
+    @PreAuthorize("@roleAccess.adminOwnerComment(#commentId, authentication)")
     public ResponseEntity<CommentDto> removeComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId)
     {
@@ -56,6 +58,7 @@ public class CommentController {
     }
 
     @PatchMapping("/{adId}/comments/{commentId}")
+    @PreAuthorize("@roleAccess.adminOwnerComment(#commentId, authentication)")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId,
                                                     @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto)

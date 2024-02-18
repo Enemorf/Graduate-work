@@ -55,8 +55,8 @@ public class ImageServiceImpl implements ImageService {
 
     private ImageEntity saveImg(ImageEntity image, MultipartFile file) throws IOException {
         String name = file.getOriginalFilename();
-        Path path = Path.of(avatarPath,
-                UUID.randomUUID()+"."+ Objects.requireNonNull(name).substring(Objects.requireNonNull(name).lastIndexOf("."+1)));
+        String fileName = UUID.randomUUID()+"."+ getExtension(Objects.requireNonNull(name));
+        Path path = Path.of(avatarPath, fileName);
         Files.createDirectories(path.getParent());
         streamReadWrite(path,file);
         image.setPath(path.toString());
@@ -80,5 +80,9 @@ public class ImageServiceImpl implements ImageService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public ImageEntity getSave(ImageEntity image) {
         return imagesRepository.save(image);
+    }
+
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }

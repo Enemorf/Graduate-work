@@ -23,7 +23,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final ImagesRepository imagesRepository;
-
     @Value("${path.to.images.folder}")
     private String imagesPath;
 
@@ -50,6 +49,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] getByteFromFile(String path) throws IOException {
+        if(path.startsWith("C:"))
+            return Files.readAllBytes(Path.of(path));
         return Files.readAllBytes(Path.of(imagesPath, path));
     }
 
